@@ -5,15 +5,91 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>About | Raghab Dhungana</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
 <style>
-body { font-family: 'Inter', sans-serif; margin:0; background:#f8f9fb; color:#333; }
-header { display:flex; justify-content:space-between; align-items:center; padding:20px 10%; background:white; box-shadow:0 2px 10px rgba(0,0,0,0.05); }
-nav a { margin-left:20px; text-decoration:none; color:#333; font-weight:500; }
-nav a:hover { color:#2563eb; }
-main { padding:100px 10%; text-align:center; }
-h1 { font-size:36px; margin-bottom:30px; }
-p { max-width:700px; margin:0 auto; font-size:18px; color:#555; line-height:1.7; }
-footer { text-align:center; padding:20px; margin-top:80px; background:white; }
+body { 
+  font-family: 'Inter', sans-serif; 
+  margin:0; 
+  background:#f8f9fb; 
+  color:#333; 
+}
+
+header { 
+  display:flex; 
+  justify-content:space-between; 
+  align-items:center; 
+  padding:20px 10%; 
+  background:white; 
+  box-shadow:0 2px 10px rgba(0,0,0,0.05); 
+}
+
+nav a { 
+  margin-left:20px; 
+  text-decoration:none; 
+  color:#333; 
+  font-weight:500; 
+}
+
+nav a:hover { 
+  color:#2563eb; 
+}
+
+main { 
+  padding:100px 10%; 
+  text-align:center; 
+}
+
+h1 { 
+  font-size:36px; 
+  margin-bottom:30px; 
+}
+
+.about-text {
+  max-width:700px; 
+  margin:0 auto; 
+  font-size:18px; 
+  color:#555; 
+  line-height:1.7; 
+}
+
+.contact-section {
+  margin-top:80px;
+}
+
+.contact-card {
+  background:white;
+  padding:40px;
+  border-radius:12px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.05);
+  max-width:500px;
+  margin:0 auto;
+}
+
+.contact-card h2 {
+  margin-bottom:20px;
+}
+
+.contact-btn {
+  display:inline-block;
+  margin:10px 10px 0 10px;
+  padding:10px 20px;
+  background:#2563eb;
+  color:white;
+  border-radius:8px;
+  text-decoration:none;
+  font-size:14px;
+}
+
+.contact-btn:hover {
+  background:#1e4ed8;
+}
+
+footer { 
+  text-align:center; 
+  padding:20px; 
+  margin-top:80px; 
+  background:white; 
+}
 </style>
 </head>
 <body>
@@ -24,17 +100,26 @@ footer { text-align:center; padding:20px; margin-top:80px; background:white; }
     <a href="index.html">Home</a>
     <a href="about.html">About</a>
     <a href="projects.html">Projects</a>
-    <a href="contact.html">Contact</a>
   </nav>
 </header>
 
 <main>
   <h1>About Me</h1>
-  <p>
+
+  <p class="about-text">
     I am a young individual motivated to continuously grow and develop my skills in areas of the real world that genuinely interest me. 
     Through independent projects and hands-on learning, I challenge myself to think critically, adapt quickly, and improve both personally and professionally. 
     I am driven by curiosity and a desire to build meaningful solutions that have real-world impact.
   </p>
+
+  <div class="contact-section">
+    <div class="contact-card">
+      <h2>Get In Touch</h2>
+      <a href="mailto:your.email@example.com" class="contact-btn">Email Me</a>
+      <a href="https://linkedin.com/in/yourprofile" target="_blank" class="contact-btn">LinkedIn</a>
+    </div>
+  </div>
+
 </main>
 
 <footer>
