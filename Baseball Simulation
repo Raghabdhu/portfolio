@@ -1,0 +1,139 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import random
+
+# -------------------------------------------------------------------------------------------------------------------
+# DATA PROCESSING (Pandas)
+
+try:
+    df = pd.read_csv('player_stats.csv')
+except FileNotFoundError:
+    print("Error: Could not find 'player_stats.csv'. Please ensure the file is in the same directory as this script.")
+    exit()
+
+home_team = df[df['Team'] == 'Home'].to_dict('records')
+away_team = df[df['Team'] == 'Away'].to_dict('records')
+
+def simulate_at_bat(player):
+    """Uses probability distributions based on historical stats to simulate an at-bat."""
+    rng = random.random()
+    
+    # Check if the player gets on base
+    if rng > player['OBP']:
+        return 'Out'
+    
+    # If on base, determine if it's a walk or a hit
+    if rng > player['AVG']:
+        return 'Walk'
+    
+    # If it's a hit, use probability weights to determine the type of hit
+    hit_rng = random.random()
+    if hit_rng < player['1B_pct']: return 'Single'
+    elif hit_rng < player['1B_pct'] + player['2B_pct']: return 'Double'
+    elif hit_rng < player['1B_pct'] + player['2B_pct'] + player['3B_pct']: return 'Triple'
+    else: return 'Home Run'
+
+
+# GAMEPLAY SCENARIO ENGINE
+# -------------------------------------------------------------------------------------------------------------------
+
+def play_half_inning(team, lineup_index):
+    """Simulates a half-inning, tracking outs, bases, and runs."""
+    outs = 0
+    runs = 0
+    bases = [0, 0, 0] # 1st, 2nd, 3rd base
+    
+    while outs < 3:
+        batter = team[lineup_index % 9]
+        result = simulate_at_bat(batter)
+        lineup_index += 1
+        
+        if result == 'Out':
+            outs += 1
+        elif result == 'Walk' or result == 'Single':
+            runs += bases[2]
+            bases = [1, bases[0], bases[1]]
+        elif result == 'Double':
+            runs += bases[1] + bases[2]
+            bases = [0, 1, bases[0]]
+        elif result == 'Triple':
+            runs += bases[0] + bases[1] + bases[2]
+            bases = [0, 0, 1]
+        elif result == 'Home Run':
+            runs += bases[0] + bases[1] + bases[2] + 1
+            bases = [0, 0, 0]
+            
+    return runs, lineup_index
+
+def simulate_game():
+    """Models a standard 9-inning game."""
+    home_runs, away_runs = 0, 0
+    home_idx, away_idx = 0, 0
+    
+    for inning in range(9):
+        # Away team hits top of the inning
+        runs, away_idx = play_half_inning(away_team, away_idx)
+        away_runs += runs
+        
+        # Home team hits bottom of the inning
+        runs, home_idx = play_half_inning(home_team, home_idx)
+        home_runs += runs
+        
+    # Simple tie-breaker for simulation purposes
+    if home_runs == away_runs:
+        home_runs += random.choice([0, 1])
+        if home_runs == away_runs: away_runs += 1
+        
+    return home_runs, away_runs
+
+# -------------------------------------------------------------------------------------------------------------------
+# PREDICTIVE MODEL
+
+ITERATIONS = 1000 # Number of games to simulate
+home_victories = 0
+away_victories = 0
+home_run_totals = []
+away_run_totals = []
+
+print(f"Simulating {ITERATIONS} games using data from CSV... Please wait.")
+
+for _ in range(ITERATIONS):
+    h_score, a_score = simulate_game()
+    home_run_totals.append(h_score)
+    away_run_totals.append(a_score)
+    
+    if h_score > a_score:
+        home_victories += 1
+    else:
+        away_victories += 1
+
+home_win_prob = (home_victories / ITERATIONS) * 100
+away_win_prob = (away_victories / ITERATIONS) * 100
+
+print(f"Simulation Complete.")
+print(f"Home Win Probability: {home_win_prob:.1f}%")
+print(f"Away Win Probability: {away_win_prob:.1f}%")
+
+# -------------------------------------------------------------------------------------------------------------------
+# 3. Visuals
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+
+# Plot 1: Probabilistic Win Outcomes (Pie Chart)
+labels = ['Home Team Wins', 'Away Team Wins']
+sizes = [home_victories, away_victories]
+colors = ['#1f77b4', '#ff7f0e']
+ax1.pie(sizes, labels=labels, autopct='%1.1f%%', colors=colors, startangle=90, explode=(0.05, 0))
+ax1.set_title(f'Win Probability ({ITERATIONS} Iterations)')
+
+# Plot 2: Run Distribution (Histogram)
+ax2.hist(home_run_totals, alpha=0.6, label='Home Runs', bins=15, color='blue')
+ax2.hist(away_run_totals, alpha=0.6, label='Away Runs', bins=15, color='orange')
+ax2.set_xlabel('Runs Scored')
+ax2.set_ylabel('Frequency')
+ax2.set_title('Distribution of Runs Scored per Game')
+ax2.legend()
+
+plt.tight_layout()
+plt.show()
