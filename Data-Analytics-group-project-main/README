@@ -1,0 +1,4 @@
+For the preprocessing.py you need to download all the parquet files from: https://www.kaggle.com/datasets/jeffsinsel/nyc-fhvhv-data as the files are too big to upload to github.
+Then put all the parquet files you want into the folder named NYCData.
+The python script uses dynamic loading so you can add or remove as many files as you want and the script will generate a sample datbase.
+The sample data for weather has already been created.
