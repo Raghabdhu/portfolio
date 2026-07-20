@@ -1,2 +1,2 @@
 # portfolio
-This is a website with most of my previous and new works
+This is a website with my previous and new works
